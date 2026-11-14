@@ -76,10 +76,11 @@ document.getElementById('themeToggle').addEventListener('click', function () {
     var root = document.documentElement;
     COLOR_KEYS.forEach(function (c) {
       var v = state.colors[c.key];
-      if (v) root.style.setProperty(c.css, v);
+      if (v) { root.style.setProperty(c.css, v); if (document.body) document.body.style.setProperty(c.css, v); }
     });
     root.style.setProperty("--primary", state.colors.navy);
     root.style.setProperty("--blue", state.colors.navy);
+    if (document.body) { document.body.style.setProperty("--primary", state.colors.navy); document.body.style.setProperty("--blue", state.colors.navy); }
     var fonts = { vazir: "'Vazirmatn',sans-serif", tahoma: "Tahoma,sans-serif", system: "system-ui,sans-serif" };
     var fs = document.getElementById("fs");
     if (fs) {
