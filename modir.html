@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>پنل مدیریت مدرسه مدار</title>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+<style>
+/* ⚙️ مقیاس کل صفحه: اگر هنوز بزرگ یا کوچک بود فقط همین عدد را عوض کن (مثلاً 9px یا 11px) */
+html{font-size:10px}
+:root{
+  --bg:#f5f7fb; --surface:#ffffff; --navy:#1c2b4b; --navy-hover:#273b66; --gold:#d4b16a;
+  --text:#1e293b; --muted:#64748b; --light:#94a3b8; --line:#e3e8f0; --circle:#e9eef6;
+  --green:#22c55e; --blue:#2563eb; --amber:#f59e0b; --red:#ef4444; --blob:#e9eef8;
+}
+body.dark{
+  --bg:#0f172a; --surface:#1e293b; --navy:#e2e8f0; --navy-hover:#cbd5e1;
+  --text:#f1f5f9; --muted:#94a3b8; --light:#64748b; --line:#263348; --circle:#263348; --blob:#16213a;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Vazirmatn',sans-serif}
+body{background:radial-gradient(circle at 80% 100%,var(--blob) 0,transparent 40%),var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;font-size:1.1rem;transition:background-color .25s,color .25s}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+svg{flex-shrink:0}
+
+/* ============ هدر ============ */
+.top-header{padding:1.4rem 3.2rem 0}
+.header-row{display:flex;align-items:center;gap:1.8rem}
+.brand{display:flex;align-items:center;gap:.5rem;color:var(--navy);font-weight:800;font-size:1.7rem}
+.brand-logo{height:2.4rem;width:auto;display:block}
+.search{position:relative;flex:1;max-width:30rem}
+.search input{width:100%;height:2.8rem;border-radius:999px;background:var(--surface);padding:0 3rem 0 1.2rem;
+  font-size:1rem;color:var(--text);outline:none;border:1px solid transparent}
+.search input:focus{border-color:var(--gold)}
+.search input::placeholder{color:var(--light)}
+.search svg{position:absolute;right:1.1rem;top:50%;transform:translateY(-50%);width:1.2rem;height:1.2rem;color:var(--muted)}
+.actions{margin-inline-start:auto;display:flex;align-items:center;gap:1.4rem}
+.icon-btn{position:relative;background:none;border:0;color:var(--muted);display:flex;padding:.2rem}
+.icon-btn:hover{color:var(--navy)}
+.icon-btn svg{width:1.5rem;height:1.5rem}
+.dot-red{position:absolute;top:0;right:.1rem;width:.6rem;height:.6rem;border-radius:50%;background:var(--red)}
+.user-btn{display:flex;align-items:center;gap:.7rem;background:none;border:0;color:var(--text);font-size:1.1rem;font-weight:600}
+.user-btn svg.chev{width:1rem;height:1rem;color:var(--muted)}
+.avatar{width:2.8rem;height:2.8rem;border-radius:.9rem;background:var(--surface);border:1px solid var(--line);color:var(--navy);display:flex;align-items:center;justify-content:center}
+.avatar svg{width:1.5rem;height:1.5rem}
+.nav{display:flex;align-items:center;gap:2.2rem;margin-top:1.2rem;padding-inline-end:.4rem}
+.nav a{display:flex;align-items:center;gap:.5rem;padding:.5rem .3rem .8rem;color:var(--muted);font-weight:500;font-size:1.1rem;border-bottom:2px solid transparent}
+.nav a svg{width:1.3rem;height:1.3rem}
+.nav a:hover{color:var(--navy)}
+.nav a.active{color:var(--navy);font-weight:800;border-bottom-color:var(--navy);padding-inline:1.5rem}
+
+/* ============ هیرو ============ */
+.hero{display:grid;grid-template-columns:1fr 38%;align-items:stretch;min-height:21rem;position:relative}
+/* اولین ستون در RTL سمت راست است = عکس ساختمان */
+.hero-image{position:relative}
+/* شکل ارگانیک روشن پشت عکس (مثل نمونه) */
+.hero-image::before{content:"";position:absolute;inset:0 -4rem 1.5rem 3%;background:var(--blob);opacity:.7;
+  border-radius:60% 0 0 40% / 55% 0 0 45%}
+/* خود عکس: گوشه بالا-چپ گرد + محو شدن در چپ و پایین */
+.hero-photo{position:absolute;inset:0;border-top-left-radius:11rem 6rem;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 38%),linear-gradient(to bottom,#000 62%,transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to right,transparent 0,#000 38%),linear-gradient(to bottom,#000 62%,transparent 100%);
+  mask-composite:intersect}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;background:#cfd8e6}
+/* دایره طلایی کم‌رنگ کنار عکس */
+.blob-gold{position:absolute;left:1.5%;top:36%;width:2.4rem;height:2.4rem;border-radius:50%;z-index:2;
+  background:radial-gradient(circle,#e9cf9a 0,#f1dcb4 55%,transparent 72%);opacity:.9}
+
+.hero-body{padding:1rem 3.2rem 1rem 2rem;text-align:left;align-self:center}
+.hero-body h1{font-size:2.4rem;font-weight:800;color:var(--navy);margin-bottom:.6rem}
+.hero-body p{font-size:1.15rem;color:var(--text);margin-bottom:.8rem}
+.gold-bar{width:2.8rem;height:2px;background:var(--gold);border-radius:2px;margin-right:auto}
+.stats{display:flex;margin-top:2.4rem}
+.stat{flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.2rem .6rem}
+.stat + .stat{border-inline-start:1px solid var(--line)}
+.stat svg{width:1.8rem;height:1.8rem;color:var(--navy);margin-bottom:.2rem}
+.stat b{font-size:1.5rem;font-weight:800;color:var(--navy);line-height:1.3}
+.stat span{font-size:1rem;color:var(--muted)}
+
+/* ============ سه ستون ============ */
+.main{flex:1;display:grid;grid-template-columns:1.1fr 1.25fr 1fr;padding:2rem 3.2rem 1.4rem}
+.col{padding:.2rem 2.2rem;display:flex;flex-direction:column}
+.col + .col{border-inline-start:1px solid var(--line)}
+.col:first-child{padding-inline-start:0}
+.col:last-child{padding-inline-end:0}
+.col-head{display:flex;align-items:center;gap:.8rem;margin-bottom:1.6rem}
+.col-head i{width:1.8rem;height:2px;background:var(--gold);border-radius:2px}
+.col-head h2{font-size:1.25rem;font-weight:800;color:var(--navy)}
+
+.status{flex:1;display:flex;align-items:center;justify-content:space-between;gap:1.4rem}
+.status-mark{display:flex;flex-direction:column;align-items:center;text-align:center;gap:.6rem}
+.ring{width:8rem;height:8rem;border-radius:50%;background:var(--circle);display:flex;align-items:center;justify-content:center}
+.ring div{width:3.8rem;height:3.8rem;border-radius:50%;background:#1c2b4b;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 .4rem .9rem rgba(28,43,75,.22)}
+.ring svg{width:1.8rem;height:1.8rem;stroke-width:3}
+.live{display:flex;align-items:center;gap:.5rem;font-weight:700;color:var(--navy);font-size:1rem}
+.live i{width:.6rem;height:.6rem;border-radius:50%;background:var(--green)}
+.updated{font-size:.95rem;color:var(--muted)}
+.status-text{display:flex;flex-direction:column;align-items:flex-start;gap:1.6rem}
+.status-text p{font-size:1.1rem;line-height:1.9;color:var(--text);max-width:12rem}
+.pill-btn{display:inline-flex;align-items:center;gap:.7rem;background:#1c2b4b;color:#fff;border:0;border-radius:999px;
+  padding:.7rem 1.4rem;font-size:1rem;font-weight:600;box-shadow:0 .5rem 1rem rgba(28,43,75,.2);transition:background .2s}
+.pill-btn:hover{background:var(--navy-hover)}
+.pill-btn svg{width:1rem;height:1rem}
+
+.rows{display:flex;flex-direction:column;gap:1.4rem}
+.row{display:flex;align-items:center;gap:.8rem;font-size:1.1rem;color:var(--text)}
+.row > svg{width:1.7rem;height:1.7rem;color:var(--navy)}
+.row time{margin-inline-start:auto;font-size:.95rem;color:var(--muted);white-space:nowrap}
+.bullet{width:.6rem;height:.6rem;border-radius:50%;flex-shrink:0}
+.b-blue{background:var(--blue)} .b-green{background:var(--green)} .b-amber{background:var(--amber)}
+.circ{width:2.3rem;height:2.3rem;border-radius:50%;background:var(--circle);color:var(--navy);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s}
+.circ svg{width:1rem;height:1rem}
+.shortcut{font-weight:500}
+.shortcut .circ{margin-inline-start:auto}
+.shortcut:hover .circ,.more:hover .circ{background:var(--line)}
+.more{margin-top:auto;padding-top:1.8rem;align-self:flex-end;display:flex;align-items:center;gap:.8rem;color:var(--navy);font-weight:600;font-size:1rem}
+.more .circ{width:2.1rem;height:2.1rem}
+
+/* ============ فوتر ============ */
+.footer{margin:0 3.2rem;border-top:1px solid var(--line);padding:1.1rem 0 1.4rem;display:flex;justify-content:space-between;font-size:1rem;color:var(--muted)}
+.footer .heart{color:var(--gold)}
+.footer .school{display:flex;gap:1rem}
+
+/* ============ ریسپانسیو ============ */
+@media (max-width:1100px){
+  .hero{grid-template-columns:1fr}
+  .hero-image{height:18rem;order:-1}
+  .hero-body{padding:1.6rem 3.2rem}
+  .main{grid-template-columns:1fr;gap:2rem}
+  .col,.col:first-child,.col:last-child{padding:0}
+  .col + .col{border-inline-start:0;border-top:1px solid var(--line);padding-top:1.8rem}
+}
+@media (max-width:720px){
+  html{font-size:9.5px}
+  .top-header,.main{padding-inline:1.6rem}
+  .hero-body{padding:1.6rem}
+  .footer{margin:0 1.6rem;flex-direction:column;gap:.4rem}
+  .search{display:none}
+  .nav{overflow-x:auto;gap:1.6rem;white-space:nowrap}
+  .stats{flex-wrap:wrap;gap:1.2rem}
+  .stat{flex:1 1 30%}
+  .stat + .stat{border:0}
+  .status{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- آیکون‌ها (یک‌بار تعریف می‌شوند و در صفحه استفاده می‌شوند) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="home" viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></symbol>
+  <symbol id="school-o" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M12 8v3"/></symbol>
+  <symbol id="school" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 6v3h18V6l-9-4zM4 10v9H2v2h20v-2h-2v-9h-2v9h-3v-9h-2v9h-2v-9H9v9H6v-9H4zm6.5-5h3v1.5h-3V5z"/></symbol>
+  <symbol id="users-o" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="users" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></symbol>
+  <symbol id="user" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></symbol>
+  <symbol id="star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></symbol>
+  <symbol id="cap" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></symbol>
+  <symbol id="headset" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></symbol>
+  <symbol id="chart-o" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></symbol>
+  <symbol id="chart" viewBox="0 0 24 24" fill="currentColor"><path d="M4 12h4v8H4zM10 4h4v16h-4zM16 9h4v11h-4z"/></symbol>
+  <symbol id="gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></symbol>
+  <symbol id="bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+  <symbol id="search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+  <symbol id="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
+</svg>
+
+<!-- ================= هدر ================= -->
+<header class="top-header">
+  <div class="header-row">
+
+    <!-- ╔════════════════════════════════════════════╗
+         ║  ✏️ جای لوگوی بالا (سمت راست)                ║
+         ║  فقط مسیر src را با آدرس عکس لوگوی خودت عوض کن ║
+         ╚════════════════════════════════════════════╝ -->
+    <a href="#" class="brand" aria-label="مدار">
+      <img class="brand-logo" src="./عکس ها/هدر.png" alt="لوگوی مدار" />
+    </a>
+
+    <div class="search">
+      <svg viewBox="0 0 24 24"><use href="#search"/></svg>
+      <input type="text" placeholder="جستجو در سامانه..." />
+    </div>
+
+    <div class="actions">
+      <button class="icon-btn" id="themeToggle" title="تغییر تم" aria-label="تغییر تم">
+        <svg viewBox="0 0 24 24"><use href="#sun"/></svg>
+      </button>
+      <button class="icon-btn" title="اعلان‌ها" aria-label="اعلان‌ها">
+        <span class="dot-red"></span>
+        <svg viewBox="0 0 24 24"><use href="#bell"/></svg>
+      </button>
+      <button class="user-btn">
+        <div class="avatar"><svg viewBox="0 0 24 24"><use href="#user"/></svg></div>
+        <span>مدیر ارشد</span>
+        <svg class="chev" viewBox="0 0 24 24"><use href="#chev"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <a href="#" class="active"><svg viewBox="0 0 24 24"><use href="#home"/></svg><span>داشبورد</span></a>
+    <a href="#"><svg viewBox="0 0 24 24"><use href="#school-o"/></svg><span>مدیریت مدرسه</span></a>
+    <a href="#"><svg viewBox="0 0 24 24"><use href="#users-o"/></svg><span>مدیریت کاربران</span></a>
+    <a href="#"><svg viewBox="0 0 24 24"><use href="#headset"/></svg><span>پشتیبانی</span></a>
+    <a href="#"><svg viewBox="0 0 24 24"><use href="#chart-o"/></svg><span>گزارش‌ها</span></a>
+    <a href="#"><svg viewBox="0 0 24 24"><use href="#gear"/></svg><span>تنظیمات</span></a>
+  </nav>
+</header>
+
+<!-- ================= هیرو ================= -->
+<section class="hero">
+
+  <!-- ╔════════════════════════════════════════════╗
+       ║  ✏️ جای عکس هیرو (ساختمان مدرسه، سمت راست)    ║
+       ║  فقط مسیر src را با آدرس عکس خودت عوض کن       ║
+       ╚════════════════════════════════════════════╝ -->
+  <div class="hero-image">
+    <span class="blob-gold"></span>
+    <div class="hero-photo">
+      <img src="./عکس ها/f2e13dd0-33af-4ff6-9a6e-5003fcf8d901.png" alt="ساختمان مدرسه مدار" />
+    </div>
+  </div>
+
+  <div class="hero-body">
+    <h1>سلام، مدیر ارشد عزیز!</h1>
+    <p>به پنل مدیریت مدرسه مدار خوش آمدید.</p>
+    <div class="gold-bar"></div>
+
+    <div class="stats">
+      <div class="stat"><svg viewBox="0 0 24 24"><use href="#cap"/></svg><b>۳,۲۵۰</b><span>دانش‌آموزان</span></div>
+      <div class="stat"><svg viewBox="0 0 24 24"><use href="#user"/></svg><b>۱۲</b><span>مدیران</span></div>
+      <div class="stat"><svg viewBox="0 0 24 24"><use href="#star"/></svg><b>۱۸۹</b><span>کاربران ویژه</span></div>
+      <div class="stat"><svg viewBox="0 0 24 24"><use href="#school"/></svg><b>۲۷۰</b><span>مدرسه</span></div>
+      <div class="stat"><svg viewBox="0 0 24 24"><use href="#headset"/></svg><b>۴,۲۶۰</b><span>تیکت پشتیبانی</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= سه ستون ================= -->
+<main class="main">
+
+  <!-- وضعیت سامانه (راست) -->
+  <section class="col">
+    <div class="col-head"><i></i><h2>وضعیت سامانه</h2></div>
+    <div class="status">
+      <div class="status-mark">
+        <div class="ring"><div><svg viewBox="0 0 24 24"><use href="#check"/></svg></div></div>
+        <span class="live"><i></i>سامانه در حال اجرا است</span>
+        <span class="updated">آخرین بروزرسانی: امروز، ۱۴:۳۲</span>
+      </div>
+      <div class="status-text">
+        <p>همه سرویس‌ها به درستی در حال کار هستند.</p>
+        <button class="pill-btn"><span>مشاهده جزئیات</span><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- آخرین فعالیت‌ها (وسط) -->
+  <section class="col">
+    <div class="col-head"><i></i><h2>آخرین فعالیت‌ها</h2></div>
+    <div class="rows">
+      <div class="row"><svg viewBox="0 0 24 24"><use href="#school"/></svg><span class="bullet b-blue"></span><span>یک مدرسه جدید ثبت شد.</span><time>امروز - ۱۴:۳۲</time></div>
+      <div class="row"><svg viewBox="0 0 24 24"><use href="#users"/></svg><span class="bullet b-green"></span><span>کاربر جدیدی ثبت‌نام کرد.</span><time>امروز - ۱۳:۱۰</time></div>
+      <div class="row"><svg viewBox="0 0 24 24"><use href="#headset"/></svg><span class="bullet b-amber"></span><span>تیکت جدید از پشتیبانی دریافت شد.</span><time>دیروز - ۱۹:۴۵</time></div>
+      <div class="row"><svg viewBox="0 0 24 24"><use href="#chart"/></svg><span class="bullet b-blue"></span><span>گزارش ماهانه آماده شد.</span><time>دیروز - ۱۷:۲۰</time></div>
+    </div>
+    <a href="#" class="more"><span>مشاهده فعالیت‌ها</span><span class="circ"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></a>
+  </section>
+
+  <!-- میانبرهای سریع (چپ) -->
+  <section class="col">
+    <div class="col-head"><i></i><h2>میانبرهای سریع</h2></div>
+    <div class="rows">
+      <a href="#" class="row shortcut"><svg viewBox="0 0 24 24"><use href="#school"/></svg><span>افزودن مدرسه جدید</span><span class="circ"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></a>
+      <a href="#" class="row shortcut"><svg viewBox="0 0 24 24"><use href="#users"/></svg><span>مدیریت کاربران</span><span class="circ"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></a>
+      <a href="#" class="row shortcut"><svg viewBox="0 0 24 24"><use href="#headset"/></svg><span>مشاهده تیکت‌ها</span><span class="circ"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></a>
+      <a href="#" class="row shortcut"><svg viewBox="0 0 24 24"><use href="#chart"/></svg><span>گزارش‌گیری پیشرفته</span><span class="circ"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></a>
+      <a href="#" class="row shortcut"><svg viewBox="0 0 24 24"><use href="#gear"/></svg><span>تنظیمات سامانه</span><span class="circ"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></a>
+    </div>
+  </section>
+</main>
+
+<!-- ================= فوتر ================= -->
+<footer class="footer">
+  <span>طراحی شده با <span class="heart">♥</span> برای آینده‌ای روشن‌تر</span>
+  <span class="school"><strong>مدرسه مدار</strong><span>|</span><span>پنل مدیریت نسخه ۱.۰.۰</span></span>
+</footer>
+
+<script>
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    document.body.classList.toggle('dark');
+  });
+</script>
+</body>
+</html>
