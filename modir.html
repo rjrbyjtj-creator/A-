@@ -265,12 +265,13 @@ svg{flex-shrink:0}
   <section class="col">
     <div class="col-head"><i></i><h2>آخرین فعالیت‌ها</h2></div>
     <div class="rows">
-      <div class="row"><svg viewBox="0 0 24 24"><use href="#school"/></svg><span class="bullet b-blue"></span><span>یک مدرسه جدید ثبت شد.</span><time>امروز - ۱۴:۳۲</time></div>
-      <div class="row"><svg viewBox="0 0 24 24"><use href="#users"/></svg><span class="bullet b-green"></span><span>کاربر جدیدی ثبت‌نام کرد.</span><time>امروز - ۱۳:۱۰</time></div>
-      <div class="row"><svg viewBox="0 0 24 24"><use href="#headset"/></svg><span class="bullet b-amber"></span><span>تیکت جدید از پشتیبانی دریافت شد.</span><time>دیروز - ۱۹:۴۵</time></div>
-      <div class="row"><svg viewBox="0 0 24 24"><use href="#chart"/></svg><span class="bullet b-blue"></span><span>گزارش ماهانه آماده شد.</span><time>دیروز - ۱۷:۲۰</time></div>
+      <div class="row"><svg viewBox="0 0 24 24"><use href="#school"/></svg><span class="bullet b-blue"></span><span>یک مدرسه جدید ثبت شد</span><time>۱۰ دقیقه پیش</time></div>
+      <div class="row"><svg viewBox="0 0 24 24"><use href="#users"/></svg><span class="bullet b-green"></span><span>کاربر جدید به سامانه اضافه شد</span><time>۳۵ دقیقه پیش</time></div>
+      <div class="row"><svg viewBox="0 0 24 24"><use href="#headset"/></svg><span class="bullet b-amber"></span><span>تیکت پشتیبانی بسته شد</span><time>۱ ساعت پیش</time></div>
+      <div class="row"><svg viewBox="0 0 24 24"><use href="#chart"/></svg><span class="bullet b-blue"></span><span>گزارش ماهانه تولید شد</span><time>۲ ساعت پیش</time></div>
+      <div class="row"><svg viewBox="0 0 24 24"><use href="#gear"/></svg><span class="bullet b-green"></span><span>تنظیمات سامانه به‌روز شد</span><time>دیروز</time></div>
     </div>
-    <a href="#" class="more"><span>مشاهده فعالیت‌ها</span><span class="circ"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></a>
+    <a href="#" class="more">مشاهده همه فعالیت‌ها <span class="circ"><svg viewBox="0 0 24 24"><use href="#arrow"/></svg></span></a>
   </section>
 
   <!-- میانبرهای سریع (چپ) -->
@@ -297,5 +298,7 @@ svg{flex-shrink:0}
     document.body.classList.toggle('dark');
   });
 </script>
+<!-- گارد ادمین: فقط نقش admin اجازه ورود دارد -->
+<script src="./admin-guard.js"></script>
 </body>
 </html>
