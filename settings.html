@@ -175,6 +175,7 @@ h1{font-size:2.5rem;letter-spacing:-.03em}
       if (act) {
         await api("/" + act + "/activate", { method: "POST", headers: headers() });
         await load();
+        if (window.MadarTheme && window.MadarTheme.refresh) await window.MadarTheme.refresh();
       }
       if (del && confirm("این تم حذف شود؟")) {
         await api("/" + del, { method: "DELETE", headers: headers() });
