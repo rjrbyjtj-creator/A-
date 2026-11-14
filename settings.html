@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>تنظیمات ظاهری | پنل مدیریت مدار</title>
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+<style>
+html{font-size:10px}
+:root{
+  --bg:#f5f7fb; --surface:#ffffff; --navy:#1c2b4b; --navy-hover:#273b66; --gold:#d4b16a;
+  --text:#1e293b; --muted:#64748b; --light:#94a3b8; --line:#e3e8f0; --circle:#e9eef6;
+  --green:#22c55e; --blue:#2563eb; --amber:#f59e0b; --red:#ef4444; --blob:#e9eef8;
+  --primary:#1c2b4b; --font-main:'Vazirmatn',Tahoma,sans-serif; --radius:1.2rem;
+}
+body.dark{
+  --bg:#0f172a; --surface:#1e293b; --navy:#e2e8f0; --navy-hover:#cbd5e1;
+  --text:#f1f5f9; --muted:#94a3b8; --light:#64748b; --line:#263348; --circle:#263348; --blob:#16213a;
+  --primary:#e2e8f0;
+}
+*{box-sizing:border-box;margin:0;padding:0;font-family:var(--font-main)}
+body{background:radial-gradient(circle at 80% 100%,var(--blob) 0,transparent 40%),var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;font-size:1.1rem;transition:background-color .25s,color .25s}
+a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer}svg{flex-shrink:0}
+
+.top-header{padding:1.4rem 3.2rem 0}
+.header-row{display:flex;align-items:center;gap:1.8rem}
+.brand{display:flex;align-items:center;gap:.5rem;color:var(--navy);font-weight:800;font-size:1.7rem}
+.brand-logo{height:2.4rem;width:auto;display:block}
+.back-btn{display:inline-flex;align-items:center;gap:.6rem;padding:.7rem 1.4rem;border-radius:999px;
+  background:var(--surface);border:1px solid var(--line);color:var(--text);font-weight:600;font-size:1.05rem;
+  transition:background .2s,border-color .2s}
+.back-btn:hover{border-color:var(--gold);color:var(--navy)}
+.actions{margin-inline-start:auto;display:flex;align-items:center;gap:1.4rem}
+.user-btn{display:flex;align-items:center;gap:.7rem;background:none;border:0;color:var(--text);font-size:1.1rem;font-weight:600}
+.avatar{width:2.8rem;height:2.8rem;border-radius:.9rem;background:var(--surface);border:1px solid var(--line);color:var(--navy);display:flex;align-items:center;justify-content:center}
+
+.page{flex:1;padding:2.4rem 3.2rem 3rem;max-width:1100px;width:100%;margin:0 auto}
+.page-head{margin-bottom:2.4rem}
+.page-head h1{font-size:2.2rem;font-weight:800;color:var(--navy);margin-bottom:.4rem}
+.page-head p{color:var(--muted);font-size:1.15rem}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:1.8rem}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.page{padding:1.6rem}}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.8rem 2rem;
+  box-shadow:0 .4rem 1.2rem rgba(28,43,75,.04)}
+.card h2{font-size:1.3rem;font-weight:800;color:var(--navy);margin-bottom:.4rem;display:flex;align-items:center;gap:.7rem}
+.card h2 i{width:1.6rem;height:2px;background:var(--gold);border-radius:2px;display:inline-block}
+.card .desc{color:var(--muted);font-size:1.05rem;margin-bottom:1.4rem}
+
+.field{margin-bottom:1.4rem}
+.field label{display:block;font-size:1.05rem;font-weight:600;color:var(--text);margin-bottom:.5rem}
+.field select,.field input[type=text]{width:100%;height:3.4rem;padding:0 1.2rem;border-radius:.9rem;
+  border:1px solid var(--line);background:var(--bg);color:var(--text);font-size:1.1rem;outline:none}
+.field select:focus,.field input:focus{border-color:var(--gold)}
+
+.palettes{display:grid;grid-template-columns:repeat(auto-fill,minmax(12rem,1fr));gap:1rem}
+.palette{border:2px solid var(--line);border-radius:1rem;padding:1rem;cursor:pointer;background:var(--bg);
+  transition:border-color .2s,transform .15s}
+.palette:hover{transform:translateY(-2px)}
+.palette.on{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 25%,transparent)}
+.palette .swatches{display:flex;gap:.4rem;margin-bottom:.7rem}
+.palette .swatches span{flex:1;height:2.2rem;border-radius:.5rem}
+.palette .name{font-weight:700;font-size:1.05rem;color:var(--text)}
+
+.fonts{display:grid;gap:.8rem}
+.font-opt{display:flex;align-items:center;gap:1rem;padding:1rem 1.2rem;border:2px solid var(--line);
+  border-radius:1rem;cursor:pointer;background:var(--bg);transition:border-color .2s}
+.font-opt.on{border-color:var(--gold)}
+.font-opt input{accent-color:var(--navy)}
+.font-opt .sample{font-size:1.25rem;font-weight:700}
+
+.theme-row{display:flex;gap:.8rem}
+.theme-btn{flex:1;height:3.6rem;border-radius:1rem;border:2px solid var(--line);background:var(--bg);
+  font-weight:700;font-size:1.1rem;color:var(--text);transition:border-color .2s,background .2s}
+.theme-btn.on{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 12%,var(--bg))}
+
+.preview{margin-top:1rem;padding:1.4rem;border-radius:1rem;border:1px dashed var(--line);background:var(--bg)}
+.preview .chip{display:inline-flex;align-items:center;gap:.5rem;padding:.5rem 1rem;border-radius:999px;
+  background:var(--navy);color:#fff;font-weight:600;font-size:1rem;margin-left:.6rem}
+.preview .chip.gold{background:var(--gold);color:#1c2b4b}
+
+.actions-bar{display:flex;gap:1rem;margin-top:2.2rem;flex-wrap:wrap}
+.btn-primary{height:3.6rem;padding:0 2rem;border:0;border-radius:999px;background:#1c2b4b;color:#fff;
+  font-weight:700;font-size:1.1rem;box-shadow:0 .5rem 1rem rgba(28,43,75,.2)}
+.btn-primary:hover{background:var(--navy-hover)}
+.btn-ghost{height:3.6rem;padding:0 1.8rem;border:1px solid var(--line);border-radius:999px;background:var(--surface);
+  color:var(--text);font-weight:600;font-size:1.1rem}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120%);background:#1c2b4b;color:#fff;
+  padding:1rem 1.8rem;border-radius:999px;font-weight:600;font-size:1.1rem;transition:transform .35s;z-index:50}
+.toast.on{transform:translateX(-50%) translateY(0)}
+
+.footer{margin:0 3.2rem;border-top:1px solid var(--line);padding:1.1rem 0 1.4rem;display:flex;justify-content:space-between;font-size:1rem;color:var(--muted)}
+.footer .heart{color:var(--gold)}
+</style>
+</head>
+<body>
+<header class="top-header">
+  <div class="header-row">
+    <a href="./index.html" class="brand" aria-label="مدار">
+      <img class="brand-logo" src="./عکس ها/هدر.png" alt="لوگوی مدار" onerror="this.style.display='none'" />
+    </a>
+    <a href="./index.html" class="back-btn">← بازگشت به داشبورد</a>
+    <div class="actions">
+      <button class="user-btn" type="button">
+        <div class="avatar">⚙</div>
+        <span>تنظیمات ظاهری</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="page">
+  <div class="page-head">
+    <h1>تنظیمات ظاهری و محتوایی</h1>
+    <p>پالت رنگی، فونت و تم سامانه را از اینجا مدیریت کن. تغییرات در همین مرورگر ذخیره می‌شود.</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2><i></i> پالت رنگی</h2>
+      <p class="desc">یکی از پالت‌های آماده را انتخاب کن.</p>
+      <div class="palettes" id="palettes">
+        <div class="palette on" data-id="madar">
+          <div class="swatches"><span style="background:#1c2b4b"></span><span style="background:#d4b16a"></span><span style="background:#f5f7fb"></span><span style="background:#22c55e"></span></div>
+          <div class="name">مدار (پیش‌فرض)</div>
+        </div>
+        <div class="palette" data-id="ocean">
+          <div class="swatches"><span style="background:#0f4c81"></span><span style="background:#38bdf8"></span><span style="background:#f0f9ff"></span><span style="background:#10b981"></span></div>
+          <div class="name">اقیانوس</div>
+        </div>
+        <div class="palette" data-id="forest">
+          <div class="swatches"><span style="background:#14532d"></span><span style="background:#84cc16"></span><span style="background:#f7fee7"></span><span style="background:#f59e0b"></span></div>
+          <div class="name">جنگل</div>
+        </div>
+        <div class="palette" data-id="royal">
+          <div class="swatches"><span style="background:#4c1d95"></span><span style="background:#c4b5fd"></span><span style="background:#f5f3ff"></span><span style="background:#ec4899"></span></div>
+          <div class="name">بنفش سلطنتی</div>
+        </div>
+        <div class="palette" data-id="sunset">
+          <div class="swatches"><span style="background:#9a3412"></span><span style="background:#fb923c"></span><span style="background:#fff7ed"></span><span style="background:#ef4444"></span></div>
+          <div class="name">غروب</div>
+        </div>
+        <div class="palette" data-id="slate">
+          <div class="swatches"><span style="background:#334155"></span><span style="background:#94a3b8"></span><span style="background:#f8fafc"></span><span style="background:#0ea5e9"></span></div>
+          <div class="name">اسلیت</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><i></i> فونت و تم</h2>
+      <p class="desc">فونت اصلی رابط و حالت روشن/تاریک.</p>
+
+      <div class="field">
+        <label>فونت سامانه</label>
+        <div class="fonts" id="fonts">
+          <label class="font-opt on"><input type="radio" name="font" value="vazir" checked>
+            <span class="sample" style="font-family:'Vazirmatn',Tahoma,sans-serif">وزیرمتن — سلام مدار</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="tahoma">
+            <span class="sample" style="font-family:Tahoma,sans-serif">تاهوما — سلام مدار</span></label>
+          <label class="font-opt"><input type="radio" name="font" value="system">
+            <span class="sample" style="font-family:system-ui,sans-serif">سیستم — سلام مدار</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>تم</label>
+        <div class="theme-row">
+          <button type="button" class="theme-btn on" data-theme="light">روشن</button>
+          <button type="button" class="theme-btn" data-theme="dark">تاریک</button>
+        </div>
+      </div>
+
+      <div class="preview">
+        <div class="chip">نمونه دکمه اصلی</div>
+        <div class="chip gold">نمونه طلایی</div>
+        <p style="margin-top:1rem;color:var(--muted)">پیش‌نمایش رنگ و فونت فعلی</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:1.8rem">
+    <h2><i></i> مقیاس و محتوا</h2>
+    <p class="desc">اندازه پایه فونت صفحه و عنوان نمایشی پنل.</p>
+    <div class="grid">
+      <div class="field">
+        <label>اندازه پایه (px)</label>
+        <select id="baseSize">
+          <option value="9">۹ — فشرده</option>
+          <option value="10" selected>۱۰ — استاندارد</option>
+          <option value="11">۱۱ — بزرگ‌تر</option>
+          <option value="12">۱۲ — خیلی بزرگ</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>عنوان پنل</label>
+        <input type="text" id="panelTitle" value="پنل مدیریت مدرسه مدار" maxlength="60" />
+      </div>
+    </div>
+  </div>
+
+  <div class="actions-bar">
+    <button type="button" class="btn-primary" id="saveBtn">ذخیره تنظیمات</button>
+    <button type="button" class="btn-ghost" id="resetBtn">بازگشت به پیش‌فرض</button>
+    <a href="./index.html" class="btn-ghost" style="display:inline-flex;align-items:center">بازگشت به داشبورد</a>
+  </div>
+</div>
+
+<footer class="footer">
+  <span>طراحی شده با <span class="heart">♥</span> برای آینده‌ای روشن‌تر</span>
+  <span>مدرسه مدار | تنظیمات ظاهری</span>
+</footer>
+
+<div class="toast" id="toast">تنظیمات ذخیره شد</div>
+
+<script src="./admin-guard.js"></script>
+<script>
+(function () {
+  var KEY = 'madar_admin_appearance';
+  var PALETTES = {
+    madar:  { navy:'#1c2b4b', gold:'#d4b16a', bg:'#f5f7fb', green:'#22c55e' },
+    ocean:  { navy:'#0f4c81', gold:'#38bdf8', bg:'#f0f9ff', green:'#10b981' },
+    forest: { navy:'#14532d', gold:'#84cc16', bg:'#f7fee7', green:'#f59e0b' },
+    royal:  { navy:'#4c1d95', gold:'#c4b5fd', bg:'#f5f3ff', green:'#ec4899' },
+    sunset: { navy:'#9a3412', gold:'#fb923c', bg:'#fff7ed', green:'#ef4444' },
+    slate:  { navy:'#334155', gold:'#94a3b8', bg:'#f8fafc', green:'#0ea5e9' }
+  };
+  var FONTS = {
+    vazir: "'Vazirmatn',Tahoma,sans-serif",
+    tahoma: "Tahoma,sans-serif",
+    system: "system-ui,-apple-system,sans-serif"
+  };
+
+  var state = { palette:'madar', font:'vazir', theme:'light', baseSize:'10', panelTitle:'پنل مدیریت مدرسه مدار' };
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) Object.assign(state, JSON.parse(raw));
+    } catch (e) {}
+  }
+
+  function apply() {
+    var p = PALETTES[state.palette] || PALETTES.madar;
+    var root = document.documentElement;
+    root.style.setProperty('--navy', p.navy);
+    root.style.setProperty('--gold', p.gold);
+    root.style.setProperty('--bg', state.theme === 'dark' ? '#0f172a' : p.bg);
+    root.style.setProperty('--green', p.green);
+    root.style.setProperty('--font-main', FONTS[state.font] || FONTS.vazir);
+    root.style.fontSize = state.baseSize + 'px';
+    document.body.classList.toggle('dark', state.theme === 'dark');
+    document.title = (state.panelTitle || 'تنظیمات ظاهری') + ' | مدار';
+  }
+
+  function syncUI() {
+    document.querySelectorAll('.palette').forEach(function (el) {
+      el.classList.toggle('on', el.dataset.id === state.palette);
+    });
+    document.querySelectorAll('input[name=font]').forEach(function (el) {
+      el.checked = el.value === state.font;
+      el.closest('.font-opt').classList.toggle('on', el.checked);
+    });
+    document.querySelectorAll('.theme-btn').forEach(function (el) {
+      el.classList.toggle('on', el.dataset.theme === state.theme);
+    });
+    document.getElementById('baseSize').value = state.baseSize;
+    document.getElementById('panelTitle').value = state.panelTitle;
+  }
+
+  function save() {
+    state.baseSize = document.getElementById('baseSize').value;
+    state.panelTitle = document.getElementById('panelTitle').value.trim() || state.panelTitle;
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+    apply();
+    var t = document.getElementById('toast');
+    t.classList.add('on');
+    clearTimeout(t._t);
+    t._t = setTimeout(function () { t.classList.remove('on'); }, 2200);
+  }
+
+  document.querySelectorAll('.palette').forEach(function (el) {
+    el.addEventListener('click', function () {
+      state.palette = el.dataset.id;
+      syncUI(); apply();
+    });
+  });
+  document.querySelectorAll('input[name=font]').forEach(function (el) {
+    el.addEventListener('change', function () {
+      state.font = el.value;
+      syncUI(); apply();
+    });
+  });
+  document.querySelectorAll('.theme-btn').forEach(function (el) {
+    el.addEventListener('click', function () {
+      state.theme = el.dataset.theme;
+      syncUI(); apply();
+    });
+  });
+  document.getElementById('saveBtn').addEventListener('click', save);
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    state = { palette:'madar', font:'vazir', theme:'light', baseSize:'10', panelTitle:'پنل مدیریت مدرسه مدار' };
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    syncUI(); apply();
+  });
+
+  load();
+  syncUI();
+  apply();
+})();
+</script>
+</body>
+</html>
