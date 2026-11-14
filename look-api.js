@@ -1,8 +1,9 @@
 document.getElementById('themeToggle').addEventListener('click', function () {
-  document.body.classList.toggle('dark');
-  var d = document.body.classList.contains('dark');
-  document.getElementById('swDark').setAttribute('aria-checked', d);
-  document.getElementById('swLight').setAttribute('aria-checked', !d);
+  var dark = !document.body.classList.contains('dark');
+  if (window.MadarAdminSetMode) window.MadarAdminSetMode(dark ? "dark" : "light");
+  else document.body.classList.toggle('dark', dark);
+  document.getElementById('swDark').setAttribute('aria-checked', dark);
+  document.getElementById('swLight').setAttribute('aria-checked', !dark);
 });
 
 (function () {
@@ -24,33 +25,17 @@ document.getElementById('themeToggle').addEventListener('click', function () {
   };
   var SUGGESTED = [
     {
-      id: "sug-madar",
-      name: "مدار",
-      font: "vazir",
-      mode: "light",
+      id: "sug-madar", slug: "madar", name: "مدار (پیش‌فرض)", font: "vazir", mode: "light",
       colors: {
         navy: "#1c2b4b", gold: "#d4b16a", bg: "#f5f7fb", green: "#22c55e",
         text: "#1e293b", muted: "#64748b", surface: "#ffffff", line: "#e3e8f0"
       }
     },
     {
-      id: "sug-mono",
-      name: "سیاه‌وسفید",
-      font: "vazir",
-      mode: "light",
+      id: "sug-gray", slug: "gray", name: "خاکستری", font: "vazir", mode: "light",
       colors: {
-        navy: "#111111", gold: "#737373", bg: "#fafafa", green: "#16a34a",
-        text: "#0a0a0a", muted: "#737373", surface: "#ffffff", line: "#e5e5e5"
-      }
-    },
-    {
-      id: "sug-ocean",
-      name: "اقیانوس",
-      font: "vazir",
-      mode: "light",
-      colors: {
-        navy: "#0f4c81", gold: "#38bdf8", bg: "#f0f9ff", green: "#10b981",
-        text: "#0c4a6e", muted: "#64748b", surface: "#ffffff", line: "#e0f2fe"
+        navy: "#343a40", gold: "#858b93", bg: "#f3f4f6", green: "#64748b",
+        text: "#24292f", muted: "#747b84", surface: "#ffffff", line: "#dfe3e8"
       }
     }
   ];
@@ -62,6 +47,7 @@ document.getElementById('themeToggle').addEventListener('click', function () {
     selectedName: "مدار",
     themes: []
   };
+  window.MadarAdminSetMode = function (mode) { state.mode = mode; applyPreview(); };
 
   function token() {
     try { return localStorage.getItem(KEY) || sessionStorage.getItem(KEY); } catch (e) { return null; }
@@ -92,10 +78,11 @@ document.getElementById('themeToggle').addEventListener('click', function () {
     var root = document.documentElement;
     COLOR_KEYS.forEach(function (c) {
       var v = state.colors[c.key];
-      if (v) root.style.setProperty(c.css, v);
+      if (v) { root.style.setProperty(c.css, v); if (document.body) document.body.style.setProperty(c.css, v); }
     });
     root.style.setProperty("--primary", state.colors.navy);
     root.style.setProperty("--blue", state.colors.navy);
+    if (document.body) { document.body.style.setProperty("--primary", state.colors.navy); document.body.style.setProperty("--blue", state.colors.navy); }
     var fonts = { vazir: "'Vazirmatn',sans-serif", tahoma: "Tahoma,sans-serif", system: "system-ui,sans-serif" };
     var fs = document.getElementById("fs");
     if (fs) {
@@ -203,46 +190,43 @@ document.getElementById('themeToggle').addEventListener('click', function () {
       };
       var font = (document.getElementById("sFont") || {}).value || state.font || "vazir";
       var mode = state.mode || "light";
+      var preset = SUGGESTED.find(function (item) { return item.id === state.selectedId; });
       var id = state.selectedId;
-      var isSug = id && String(id).indexOf("sug-") === 0;
-      var isServer = id && !isSug;
-
-      if (isServer) {
-        await api("/" + id, {
-          method: "PUT",
-          headers: headers(true),
-          body: JSON.stringify({ name: state.selectedName, colors: colors, font: font, mode: mode })
-        });
-        await api("/" + id + "/activate", { method: "POST", headers: headers() });
-      } else {
-        var name = state.selectedName || "پالت مدار";
-        var existing = state.themes.find(function (t) { return t.name === name; });
-        if (existing) {
-          await api("/" + existing.id, {
-            method: "PUT",
-            headers: headers(true),
-            body: JSON.stringify({ colors: colors, font: font, mode: mode })
+      var payload = { colors: colors, font: font, mode: mode };
+      if (preset) {
+        var existingPreset = state.themes.find(function (t) { return t.slug === preset.slug; });
+        if (existingPreset) {
+          await api("/" + existingPreset.id, {
+            method: "PUT", headers: headers(true),
+            body: JSON.stringify({ name: preset.name, colors: colors, font: font, mode: mode })
           });
-          await api("/" + existing.id + "/activate", { method: "POST", headers: headers() });
+          id = existingPreset.id;
         } else {
-          var created = await api("", {
-            method: "POST",
-            headers: headers(true),
-            body: JSON.stringify({ name: name, colors: colors, font: font, mode: mode })
+          var createdPreset = await api("", {
+            method: "POST", headers: headers(true),
+            body: JSON.stringify({ name: preset.name, slug: preset.slug, colors: colors, font: font, mode: mode })
           });
-          var tid = created.theme && created.theme.id;
-          if (tid) await api("/" + tid + "/activate", { method: "POST", headers: headers() });
+          id = createdPreset.theme && createdPreset.theme.id;
         }
+      } else if (id && state.themes.some(function (t) { return t.id === id; })) {
+        await api("/" + id, {
+          method: "PUT", headers: headers(true),
+          body: JSON.stringify(Object.assign({ name: state.selectedName }, payload))
+        });
+      } else {
+        throw new Error("ابتدا یکی از تم‌های موجود را انتخاب کن.");
       }
-      say("ذخیره و روی کل سایت فعال شد");
+      if (!id) throw new Error("شناسه تم برای فعال‌سازی دریافت نشد.");
+      await api("/" + id + "/activate", { method: "POST", headers: headers() });
+      say("تم ذخیره شد و در همه صفحات سایت فعال شد");
       await load();
+      if (window.MadarTheme && window.MadarTheme.refresh) window.MadarTheme.refresh().catch(function () {});
     } catch (e) {
       say(e.message || "ذخیره نشد");
     } finally {
       if (btn) btn.disabled = false;
     }
   }
-
   document.getElementById("themeCards").addEventListener("click", function (e) {
     var btn = e.target.closest(".pv-pal");
     if (!btn) return;
