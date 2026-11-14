@@ -23,6 +23,120 @@ document.getElementById('themeToggle').addEventListener('click', function () {
   };
   var state = { colors: Object.assign({}, DEF), font: "vazir", mode: "light", selectedId: null, themes: [] };
 
+  var SUGGESTED = [
+    {
+      id: "sug-madar",
+      name: "مدار (پیش‌فرض)",
+      desc: "سرمه‌ای و طلایی رسمی سایت",
+      isDefault: true,
+      font: "vazir",
+      mode: "light",
+      colors: {
+        navy: "#1c2b4b", gold: "#d4b16a", bg: "#f5f7fb", green: "#22c55e",
+        text: "#1e293b", muted: "#64748b", surface: "#ffffff", line: "#e3e8f0"
+      }
+    },
+    {
+      id: "sug-mono",
+      name: "سیاه و سفید",
+      desc: "مینیمال کلاسیک، کنتراست بالا",
+      font: "vazir",
+      mode: "light",
+      colors: {
+        navy: "#111111", gold: "#737373", bg: "#fafafa", green: "#16a34a",
+        text: "#0a0a0a", muted: "#737373", surface: "#ffffff", line: "#e5e5e5"
+      }
+    },
+    {
+      id: "sug-gray",
+      name: "خاکستری شیک",
+      desc: "طوسی خنثی و مدرن",
+      font: "vazir",
+      mode: "light",
+      colors: {
+        navy: "#374151", gold: "#9ca3af", bg: "#f3f4f6", green: "#059669",
+        text: "#111827", muted: "#6b7280", surface: "#ffffff", line: "#e5e7eb"
+      }
+    },
+    {
+      id: "sug-nord",
+      name: "نورد / اسکاندیناوی",
+      desc: "آبی یخی و سرد",
+      font: "vazir",
+      mode: "light",
+      colors: {
+        navy: "#2e3440", gold: "#88c0d0", bg: "#eceff4", green: "#a3be8c",
+        text: "#2e3440", muted: "#4c566a", surface: "#ffffff", line: "#d8dee9"
+      }
+    },
+    {
+      id: "sug-midnight",
+      name: "نیمه‌شب",
+      desc: "تاریک لوکس با طلا",
+      font: "vazir",
+      mode: "dark",
+      colors: {
+        navy: "#e2e8f0", gold: "#d4b16a", bg: "#0b1220", green: "#34d399",
+        text: "#f1f5f9", muted: "#94a3b8", surface: "#151d2e", line: "#243044"
+      }
+    },
+    {
+      id: "sug-ocean",
+      name: "اقیانوس",
+      desc: "آبی عمیق و فیروزه‌ای",
+      font: "vazir",
+      mode: "light",
+      colors: {
+        navy: "#0f4c81", gold: "#38bdf8", bg: "#f0f9ff", green: "#10b981",
+        text: "#0c4a6e", muted: "#64748b", surface: "#ffffff", line: "#e0f2fe"
+      }
+    },
+    {
+      id: "sug-forest",
+      name: "جنگل",
+      desc: "سبز طبیعی و گرم",
+      font: "vazir",
+      mode: "light",
+      colors: {
+        navy: "#14532d", gold: "#84cc16", bg: "#f7fee7", green: "#f59e0b",
+        text: "#14532d", muted: "#4d7c0f", surface: "#ffffff", line: "#ecfccb"
+      }
+    },
+    {
+      id: "sug-rose",
+      name: "رزگلد",
+      desc: "صورتی ملایم و طلایی",
+      font: "vazir",
+      mode: "light",
+      colors: {
+        navy: "#9f1239", gold: "#e8b4b8", bg: "#fff1f2", green: "#be123c",
+        text: "#4c0519", muted: "#9f1239", surface: "#ffffff", line: "#fecdd3"
+      }
+    },
+    {
+      id: "sug-royal",
+      name: "بنفش سلطنتی",
+      desc: "بنفش عمیق و لوکس",
+      font: "vazir",
+      mode: "light",
+      colors: {
+        navy: "#4c1d95", gold: "#c4b5fd", bg: "#f5f3ff", green: "#ec4899",
+        text: "#4c1d95", muted: "#6b7280", surface: "#ffffff", line: "#ede9fe"
+      }
+    },
+    {
+      id: "sug-sand",
+      name: "شن و آفتاب",
+      desc: "کرم گرم و قهوه‌ای",
+      font: "vazir",
+      mode: "light",
+      colors: {
+        navy: "#78350f", gold: "#f59e0b", bg: "#fffbeb", green: "#65a30d",
+        text: "#451a03", muted: "#92400e", surface: "#ffffff", line: "#fde68a"
+      }
+    }
+  ];
+
   function token() {
     try { return localStorage.getItem(KEY) || sessionStorage.getItem(KEY); } catch (e) { return null; }
   }
@@ -81,31 +195,46 @@ document.getElementById('themeToggle').addEventListener('click', function () {
       });
     });
   }
+  function swatches(c) {
+    c = c || {};
+    var keys = ["navy", "gold", "bg", "green", "text", "surface", "muted", "line"];
+    return keys.map(function (k) {
+      return '<b style="background:' + (c[k] || "#ccc") + '" title="' + k + '"></b>';
+    }).join("");
+  }
   function renderThemes() {
     var cards = document.getElementById("themeCards");
     var list = document.getElementById("palList");
+    var sugHtml = SUGGESTED.map(function (t) {
+      var on = state.selectedId === t.id || (!state.selectedId && t.isDefault && !state.themes.some(function (x) { return x.isActive; }));
+      return '<button type="button" class="tm' + (on ? ' on' : '') + '" data-sug="' + t.id + '">' +
+        '<i>' + swatches(t.colors) + '</i>' +
+        '<span class="tm-name">' + (t.isDefault ? '<span class="badge badge-def">پیش‌فرض</span>' : '') + t.name + '</span>' +
+        '<span class="tm-desc">' + t.desc + '</span></button>';
+    }).join("");
+    cards.innerHTML = '<div class="showcase-title">پالت‌های پیشنهادی</div><div class="themes">' + sugHtml + '</div>';
+
     if (!state.themes.length) {
-      cards.innerHTML = '<p style="color:var(--muted)">هنوز پالتی نیست. یکی بساز.</p>';
-      list.innerHTML = "";
-      return;
+      list.innerHTML = '<p style="color:var(--muted);margin-top:1rem">هنوز پالت سفارشی ذخیره‌شده‌ای نداری. یکی از پیشنهادی‌ها را انتخاب کن یا رنگ بساز و ذخیره کن.</p>';
+    } else {
+      list.innerHTML = '<div class="showcase-title">پالت‌های ذخیره‌شده شما</div><div class="themes saved-row">' +
+        state.themes.map(function (t) {
+          var c = t.colors || {};
+          return '<button type="button" class="tm' + (t.isActive || t.id === state.selectedId ? ' on' : '') + '" data-id="' + t.id + '">' +
+            '<i>' + swatches(c) + '</i>' +
+            '<span class="tm-name">' + (t.isActive ? '<span class="badge">فعال</span>' : '') + t.name + '</span></button>';
+        }).join("") + '</div>' +
+        state.themes.map(function (t) {
+          var c = t.colors || {};
+          return '<div class="pal-item' + (t.isActive ? ' active' : '') + '">' +
+            '<div class="sw">' + swatches(c) + '</div>' +
+            '<div class="name">' + t.name + (t.isActive ? ' · فعال' : '') + '</div>' +
+            '<div class="acts">' +
+            '<button type="button" class="act" data-act="' + t.id + '">فعال کن</button>' +
+            (!t.isDefault ? '<button type="button" class="del" data-del="' + t.id + '">حذف</button>' : '') +
+            '</div></div>';
+        }).join("");
     }
-    cards.innerHTML = state.themes.map(function (t) {
-      var c = t.colors || {};
-      return '<button type="button" class="tm' + (t.isActive || t.id === state.selectedId ? ' on' : '') + '" data-id="' + t.id + '">' +
-        '<i><b style="background:' + (c.navy||'#333') + '"></b><b style="background:' + (c.gold||'#ccc') + '"></b><b style="background:' + (c.bg||'#eee') + '"></b><b style="background:' + (c.green||'#0a0') + '"></b></i>' +
-        (t.isActive ? '<span class="badge">فعال</span>' : '') +
-        '<span>' + t.name + '</span></button>';
-    }).join("");
-    list.innerHTML = state.themes.map(function (t) {
-      var c = t.colors || {};
-      return '<div class="pal-item' + (t.isActive ? ' active' : '') + '">' +
-        '<div class="sw"><b style="background:' + (c.navy||'') + '"></b><b style="background:' + (c.gold||'') + '"></b><b style="background:' + (c.bg||'') + '"></b><b style="background:' + (c.green||'') + '"></b><b style="background:' + (c.text||'') + '"></b><b style="background:' + (c.surface||'') + '"></b></div>' +
-        '<div class="name">' + t.name + (t.isActive ? ' · فعال' : '') + '</div>' +
-        '<div class="acts">' +
-        '<button type="button" class="act" data-act="' + t.id + '">فعال کن</button>' +
-        (!t.isDefault ? '<button type="button" class="del" data-del="' + t.id + '">حذف</button>' : '') +
-        '</div></div>';
-    }).join("");
   }
   function selectTheme(t) {
     state.selectedId = t.id;
@@ -126,18 +255,39 @@ document.getElementById('themeToggle').addEventListener('click', function () {
       if (active) selectTheme(active);
       else { renderColorVars(); renderThemes(); applyPreview(); }
     } catch (e) {
-      document.getElementById("themeCards").innerHTML = '<p style="color:#ef4444">' + (e.message || "خطا") + '</p>';
       renderColorVars();
+      renderThemes();
       applyPreview();
+      say(e.message || "اتصال به سرور برقرار نشد — پالت‌های پیشنهادی در دسترس‌اند");
     }
   }
   document.getElementById("themeCards").addEventListener("click", function (e) {
     var btn = e.target.closest(".tm");
     if (!btn) return;
+    if (btn.dataset.sug) {
+      var s = SUGGESTED.find(function (x) { return x.id === btn.dataset.sug; });
+      if (!s) return;
+      state.selectedId = s.id;
+      state.colors = Object.assign({}, DEF, s.colors);
+      state.font = s.font || "vazir";
+      state.mode = s.mode || "light";
+      document.getElementById("sFont").value = state.font;
+      document.getElementById("palName").value = s.name.replace(/\s*\(پیش‌فرض\)\s*/, "");
+      renderColorVars();
+      renderThemes();
+      applyPreview();
+      return;
+    }
     var t = state.themes.find(function (x) { return x.id === btn.dataset.id; });
     if (t) selectTheme(t);
   });
   document.getElementById("palList").addEventListener("click", async function (e) {
+    var pick = e.target.closest(".tm");
+    if (pick && pick.dataset.id) {
+      var t = state.themes.find(function (x) { return x.id === pick.dataset.id; });
+      if (t) selectTheme(t);
+      return;
+    }
     var act = e.target.getAttribute("data-act");
     var del = e.target.getAttribute("data-del");
     try {
@@ -174,6 +324,10 @@ document.getElementById('themeToggle').addEventListener('click', function () {
   };
   document.getElementById("lkActivate").onclick = async function () {
     try {
+      if (state.selectedId && String(state.selectedId).indexOf("sug-") === 0) {
+        say("اول «ذخیره به‌عنوان پالت جدید» را بزن، بعد فعال کن");
+        return;
+      }
       if (state.selectedId) {
         await api("/" + state.selectedId + "/activate", { method: "POST", headers: headers() });
         say("تم فعال شد");
