@@ -1,8 +1,9 @@
 document.getElementById('themeToggle').addEventListener('click', function () {
-  document.body.classList.toggle('dark');
-  var d = document.body.classList.contains('dark');
-  document.getElementById('swDark').setAttribute('aria-checked', d);
-  document.getElementById('swLight').setAttribute('aria-checked', !d);
+  var dark = !document.body.classList.contains('dark');
+  if (window.MadarAdminSetMode) window.MadarAdminSetMode(dark ? "dark" : "light");
+  else document.body.classList.toggle('dark', dark);
+  document.getElementById('swDark').setAttribute('aria-checked', dark);
+  document.getElementById('swLight').setAttribute('aria-checked', !dark);
 });
 
 (function () {
@@ -46,6 +47,7 @@ document.getElementById('themeToggle').addEventListener('click', function () {
     selectedName: "مدار",
     themes: []
   };
+  window.MadarAdminSetMode = function (mode) { state.mode = mode; applyPreview(); };
 
   function token() {
     try { return localStorage.getItem(KEY) || sessionStorage.getItem(KEY); } catch (e) { return null; }
