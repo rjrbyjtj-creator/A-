@@ -111,31 +111,20 @@
   <div class="look-top">
     <div>
       <div class="ttl"><i></i><h2>تنظیمات ظاهری سایت</h2></div>
-      <p>تم و پالت رنگی روی کل سایت اعمال می‌شود — از بک‌اند ذخیره و فعال می‌شود</p>
+      <p>پالت را انتخاب کن و با یک دکمه روی کل سایت ذخیره و فعال کن</p>
     </div>
     <div class="look-act">
-      <button class="btn-reset" type="button" id="lkReset"><svg viewBox="0 0 24 24"><use href="#refresh"/></svg>بازنشانی فرم</button>
-      <button class="btn-create" type="button" id="lkCreate">ذخیره به‌عنوان پالت جدید</button>
-      <button class="btn-save" type="button" id="lkActivate"><svg viewBox="0 0 24 24"><use href="#save"/></svg>فعال‌سازی روی کل سایت</button>
+      <button class="btn-reset" type="button" id="lkReset"><svg viewBox="0 0 24 24"><use href="#refresh"/></svg>بازنشانی</button>
+      <button class="btn-save" type="button" id="lkSave"><svg viewBox="0 0 24 24"><use href="#save"/></svg>ذخیره و فعال‌سازی روی کل سایت</button>
     </div>
   </div>
 
   <div class="look-col">
     <div class="lk-card">
-      <h3><svg viewBox="0 0 24 24"><use href="#palette"/></svg>گالری پالت رنگی</h3>
-      <p style="color:var(--muted);font-size:1rem;margin:-.4rem 0 1rem">پالت پیش‌فرض سایت و چند تم پیشنهادی معروف — روی هر کدام کلیک کن تا اعمال شود</p>
-      <div id="themeCards"><p style="color:var(--muted)">در حال بارگذاری…</p></div>
-      <div class="pal-list" id="palList"></div>
-    </div>
-
-    <div class="lk-card">
-      <h3><svg viewBox="0 0 24 24"><use href="#drop"/></svg>متغیرهای رنگی پالت</h3>
-      <p style="color:var(--muted);font-size:1rem;margin-bottom:1rem">همه رنگ‌ها را ببین و عوض کن. بعد «ذخیره به‌عنوان پالت جدید» یا «فعال‌سازی» را بزن.</p>
+      <h3><svg viewBox="0 0 24 24"><use href="#drop"/></svg>رنگ‌های پالت فعال</h3>
+      <p style="color:var(--muted);font-size:1rem;margin-bottom:1rem">هر رنگ را عوض کن؛ با «ذخیره و فعال‌سازی» روی کل سایت اعمال می‌شود.</p>
       <div class="color-vars" id="colorVars"></div>
-      <div class="new-pal">
-        <label style="font-weight:700;color:var(--navy)">نام پالت جدید</label>
-        <input type="text" id="palName" placeholder="مثلاً آبی مدرسه‌ای" />
-      </div>
+      <div id="palList" class="saved-mini" style="margin-top:1rem"></div>
     </div>
 
     <div class="lk-card">
@@ -156,6 +145,7 @@
   <div class="look-col">
     <div class="pv" id="pv" data-mode="light">
       <div class="dots"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i></div>
+      <div class="pv-pals" id="themeCards" aria-label="پالت‌های پیشنهادی"></div>
       <div class="site">
         <div class="pv-nav"><b class="pv-logo">M</b><span>خانه</span><span>آزمون‌ها</span><span>مقالات</span><em class="pv-login">ورود</em></div>
         <div class="pv-hero">
